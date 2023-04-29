@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Buffer Order</key>
+	<array>
+		<string>Main</string>
+		<string>Card</string>
+		<string>Deck</string>
+		<string>Helpers</string>
+		<string>FrenchDeck</string>
+	</array>
+	<key>Dependencies</key>
+	<array>
+		<string>kjellCodea:kjellHelpers</string>
+	</array>
+</dict>
+</plist>
