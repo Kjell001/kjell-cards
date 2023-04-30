@@ -5,7 +5,15 @@ function Card:init()
 end
 
 function Card:setProperty(property, value)
-   self.properties[property] = property:make(value)
+   assert(
+      property:valueLegal(value),
+      string.format(value, "value '%s' not allowed for property")
+   )
+   self.properties[property] = value
+end
+
+function Card:removeProperty(property)
+   self.properties[property] = nil
 end
 
 function Card:hasProperty(property)
@@ -19,23 +27,10 @@ end
 
 function Card:__tostring()
    local str = ""
-   for k, v in pairs(self.properties) do
-      str = str .. tostring(v)
+   for property, value in pairs(self.properties) do
+      str = str .. tostring(property:symbol(value))
    end
    return str
-end
-
-
-CardPropertyValue = class()
-
-function CardPropertyValue:init(property, value)
-   self.property = property
-   assert(property:valueLegal(value), "value not allowed for property")
-   self.value = value
-end
-
-function CardPropertyValue:__tostring()
-   return self.property:representation(self.value)
 end
 
 
@@ -49,11 +44,7 @@ function CardProperty:valueLegal(value)
    return self.allowedValues[value] and true
 end
 
-function CardProperty:make(value)
-   return CardPropertyValue(self, value)
-end
-
-function CardProperty:representation(value)
+function CardProperty:symbol(value)
    return self.allowedValues[value]
 end
 

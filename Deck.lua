@@ -137,6 +137,8 @@ function PropertyCondition:evaluate(card)
    end
    local propertyValue = card:getPropertyValue(self.property)
    return self.test(propertyValue.value) and true
+   local value = card:getPropertyValue(self.property)
+   return self.test(value) and true
 end
 
 
