@@ -98,6 +98,24 @@ function Deck:search(condition)
    return results
 end
 
+NO_PROPERTY = {}
+function Deck:groupBy(property)
+   local groups = {}
+   local value, group
+   for index, card in ipairs(self.cards) do
+      if not card:hasProperty(property) then
+         value = NO_PROPERTY
+      else
+         value = card:getPropertyValue(property)
+      end
+      if not groups[value] then
+         groups[value] = {}
+      end
+      table.insert(groups[value], index)
+   end
+   return groups
+end
+
 function Deck:shuffle()
    local cards = self.cards
    for i = #cards, 2, -1 do

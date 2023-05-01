@@ -25,12 +25,14 @@ function setup()
       print(i, v)
    end
    
-   print("Shuffle and split")
+   print("Shuffle, split and group")
    deck:shuffle()
-   local subdeck = deck:split(27)
-   local cards = deck:drawCards(13)
-   for i, card in ipairs(cards) do
-      print(i, card)
+   local subdeck = deck:split(14)
+   local suitGroups = deck:groupBy(deck.suitProperty)
+   for value, group in pairs(suitGroups) do
+      print("Group", deck.suitProperty:symbol(value))
+      for i, index in ipairs(group) do
+         print(i, deck:seeCard(index))
+      end
    end
-   print("Remaining in deck:", #deck.cards)
 end
