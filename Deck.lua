@@ -88,14 +88,24 @@ function Deck:drawCards(amount)
    return cards
 end
 
-function Deck:search(condition)
+function Deck:find(condition, amount)
    local results = {}
+   local found = 0
    for index, card in ipairs(self.cards) do
       if condition:evaluate(card) then
          table.insert(results, index)
+         found = found + 1
+         if amount and found >= amount then
+            break
+         end
       end
    end
    return results
+end
+
+function Deck:findFirst(condition)
+   local results = self:find(condition, 1)
+   return results[1]
 end
 
 NO_PROPERTY = {}
@@ -137,38 +147,10 @@ function Deck:split(index)
    return newInstance(self, self:pickCardRange(index, amount))
 end
 
+function Deck:merge(other)
+   
+end
+
 function Deck:__len()
    return #self.cards
-end
-
-
-PropertyCondition = class()
-
-function PropertyCondition:init(property, test)
-   self.property = property
-   self.test = test
-end
-
-function PropertyCondition:evaluate(card)
-   if not card:hasProperty(self.property) then
-      return
-   end
-   local value = card:getPropertyValue(self.property)
-   return self.test(value) and true
-end
-
-
-PropertyConditionSet = class()
-
-function PropertyConditionSet:init(conditions)
-   self.conditions = conditions
-end
-
-function PropertyConditionSet:evaluate(card)
-   for _, condition in ipairs(self.conditions) do
-      if not condition:evaluate(card) then
-         return false
-      end
-   end
-   return true
 end

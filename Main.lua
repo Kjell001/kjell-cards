@@ -6,7 +6,7 @@ function setup()
    local deck = FrenchDeck()
    
    print("All aces:")
-   local results = deck:searchSuitRank(nil, 1)
+   local results = deck:findSuitRank(nil, 1)
    for i, v in ipairs(deck:seeCards(results)) do
       print(i, v)
    end
@@ -20,7 +20,7 @@ function setup()
       deck.suitProperty,
       (function(v) return v == 1 end)
    )
-   results = deck:search(PropertyConditionSet{letterCondition, rankCondition})
+   results = deck:find(PropertyConditionSet{letterCondition, rankCondition})
    for i, v in ipairs(deck:seeCards(results)) do
       print(i, v)
    end

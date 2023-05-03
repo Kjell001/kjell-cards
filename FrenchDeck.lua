@@ -9,7 +9,7 @@ function FrenchDeck:init()
    self.cards = allPropertyPermutations{self.suitProperty, self.rankProperty}
 end
 
-function FrenchDeck:searchSuitRank(suit, rank)
+function FrenchDeck:findSuitRank(suit, rank, amount)
    local conditions = {}
    if suit then
       local suitCondition = PropertyCondition(
@@ -25,5 +25,23 @@ function FrenchDeck:searchSuitRank(suit, rank)
       )
       table.insert(conditions, rankCondition)
    end
-   return Deck.search(self, PropertyConditionSet(conditions))
+   return Deck.find(self, PropertyConditionSet(conditions), amount)
+end
+
+function FrenchDeck:findFirstSuitRank(suit, rank)
+   local results = self:findSuitRank(suit, rank, 1)
+   return results[1]
+end
+
+function FrenchDeck:pokerHand()
+   -- Royal flush
+   -- Straight flush
+   -- Straight
+   -- Flush
+   -- 4 of a kind
+   -- Full house
+   -- 3 of a kind
+   -- Two pairs
+   -- Pair
+   -- High card
 end
