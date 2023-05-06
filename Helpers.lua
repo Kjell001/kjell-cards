@@ -1,3 +1,6 @@
+-- Creates cards of all possible property combinations. The amount of cards
+-- created is equal to the product of the allowedValues length of each
+-- property.
 function allPropertyPermutations(properties)
    local card
    local values = {}

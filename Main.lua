@@ -3,36 +3,38 @@
 function setup()
    DEBUG = true
    
-   local deck = FrenchDeck()
+   local deck1 = FrenchDeck()
+   deck1:fill()
+   deck1:shuffle()
+   local deck2 = deck1:split(26)
+   deck1:merge(deck1:copy())
+   deck1:shuffle()
+   deck1:split(13)
+   print("Cards in deck 1:", #deck1)
+   print("Cards in deck 2:", #deck2)
    
-   print("All aces:")
-   local results = deck:findSuitRank(nil, 1)
-   for i, v in ipairs(deck:seeCards(results)) do
-      print(i, v)
+   print("Sort deck by rank")
+   deck1:sortByRank()
+   for index, card in ipairs(deck1.cards) do
+      print(index, card)
    end
    
-   print("Letter card spades")
-   local letterCondition = PropertyCondition(
-      deck.rankProperty,
-      (function(v) return v == 1 or v > 10 end)
-   )
-   local rankCondition = PropertyCondition(
-      deck.suitProperty,
-      (function(v) return v == 1 end)
-   )
-   results = deck:find(PropertyConditionSet{letterCondition, rankCondition})
-   for i, v in ipairs(deck:seeCards(results)) do
-      print(i, v)
+   print("Distinct")
+   for index, card in ipairs(deck1:distinct().cards) do
+      print(index, card)
    end
    
-   print("Shuffle, split and group")
-   deck:shuffle()
-   local subdeck = deck:split(14)
-   local suitGroups = deck:groupBy(deck.suitProperty)
-   for value, group in pairs(suitGroups) do
-      print("Group", deck.suitProperty:symbol(value))
-      for i, index in ipairs(group) do
-         print(i, deck:seeCard(index))
+   print("By property")
+   for value, deck in deck1:distinct():byProperty(deck1.suitProperty) do
+      print(deck1.suitProperty:symbol(value), #deck, "cards")
+      for index, card in ipairs(deck.cards) do
+         print("", card)
       end
+   end
+   
+   print("All aces in second deck")
+   local deck2f = deck2:filteredSuitRank(nil, 1)
+   for index, card in ipairs(deck2f.cards) do
+      print(index, card)
    end
 end

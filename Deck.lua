@@ -7,6 +7,8 @@ function Deck:init(cards)
    end
 end
 
+-- CARD MANAGEMENT
+
 function Deck:addCard(card, index)
    assert(getmetatable(card) == Card, "'card' is not an instance of Card")
    if not index then
@@ -88,42 +90,22 @@ function Deck:drawCards(amount)
    return cards
 end
 
-function Deck:find(condition, amount)
-   local results = {}
-   local found = 0
-   for index, card in ipairs(self.cards) do
-      if condition:evaluate(card) then
-         table.insert(results, index)
-         found = found + 1
-         if amount and found >= amount then
-            break
-         end
+-- PROPERTY MANAGEMENT
+
+-- DECK MANIPULATION
+
+function Deck:sort(property, descending)
+   local comp
+   if descending then
+      function comp(a, b)
+         return b.properties[property] < a.properties[property]
+      end
+   else
+      function comp(a, b)
+         return a.properties[property] < b.properties[property]
       end
    end
-   return results
-end
-
-function Deck:findFirst(condition)
-   local results = self:find(condition, 1)
-   return results[1]
-end
-
-NO_PROPERTY = {}
-function Deck:groupBy(property)
-   local groups = {}
-   local value, group
-   for index, card in ipairs(self.cards) do
-      if not card:hasProperty(property) then
-         value = NO_PROPERTY
-      else
-         value = card:getPropertyValue(property)
-      end
-      if not groups[value] then
-         groups[value] = {}
-      end
-      table.insert(groups[value], index)
-   end
-   return groups
+   table.sort(self.cards, comp)
 end
 
 function Deck:shuffle()
@@ -142,14 +124,72 @@ function Deck:reverse()
    self.cards = revCards
 end
 
-function Deck:split(index)
-   local amount = #self.cards - index + 1
-   return newInstance(self, self:pickCardRange(index, amount))
+function Deck:copy()
+   local newDeck = newInstance(self)
+   newDeck:addCards(self.cards)
+   return newDeck
 end
 
-function Deck:merge(other)
-   
+function Deck:merge(other, clear)
+   self:addCards(other.cards)
+   if clear then
+      other.cards = {}
+   end
 end
+
+function Deck:split(afterIndex)
+   local newDeck = newInstance(self)
+   local amount = #self.cards - afterIndex
+   newDeck:addCards(self:pickCardRange(afterIndex + 1, amount))
+   return newDeck
+end
+
+-- ADVANCED MANIPULATION
+
+function Deck:filtered(condition)
+   local cards = {}
+   for index, card in ipairs(self.cards) do
+      if condition:evaluate(card) then
+         table.insert(cards, card)
+      end
+   end
+   return Deck(cards)
+end
+
+function Deck:first(condition)
+   for index, card in ipairs(self.cards) do
+      if condition:evaluate(card) then
+         return card
+      end
+   end
+end
+
+function Deck:distinct()
+   local newDeck = Deck()
+   local set = {}
+   for index, card in ipairs(self.cards) do
+      if not set[card] then
+         set[card] = true
+         newDeck:addCard(card)
+      end
+   end
+   return newDeck
+end
+
+function Deck:byProperty(property)
+   local decks = {}
+   local value
+   for index, card in ipairs(self.cards) do
+      if card:hasProperty(property) then
+         value = card:getPropertyValue(property)
+         decks[value] = decks[value] or Deck()
+         decks[value]:addCard(card)
+      end
+   end
+   return pairs(decks)
+end
+
+-- METAMETHODS
 
 function Deck:__len()
    return #self.cards
