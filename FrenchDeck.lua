@@ -1,9 +1,11 @@
+------------------------
+-- FRENCH DECK FACTORY
+------------------------
 -- A standard playing card deck of 4 suits with 13 ranks each.
 
 FrenchDeck = class(Deck)
 
--- Define properties as class constants for compatibility across different
--- FrenchDeck instances
+-- Class constants for compatibility across different instances
 FrenchDeck.suitProperty = CardProperty{
    "♠", "♥", "♦", "♣"
 }
@@ -17,14 +19,15 @@ end
 
 function FrenchDeck:fill()
    self.cards = allPropertyPermutations{self.suitProperty, self.rankProperty}
+   return self
 end
 
-function FrenchDeck:sortBySuit()
-   Deck.sort(self, self.suitProperty)
+function FrenchDeck:sortedBySuit()
+   return Deck.sorted(self, self.suitProperty)
 end
 
-function FrenchDeck:sortByRank()
-   Deck.sort(self, self.rankProperty)
+function FrenchDeck:sortedByRank()
+   return Deck.sorted(self, self.rankProperty)
 end
 
 function FrenchDeck:makeSuitCondition(suit)

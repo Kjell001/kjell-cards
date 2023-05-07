@@ -1,3 +1,7 @@
+------------------------
+-- CARD CLASS
+------------------------
+
 Card = class()
 
 function Card:init()

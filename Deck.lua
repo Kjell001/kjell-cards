@@ -1,3 +1,7 @@
+------------------------
+-- DECK CLASS
+------------------------
+
 Deck = class()
 
 function Deck:init(cards)
@@ -90,11 +94,15 @@ function Deck:drawCards(amount)
    return cards
 end
 
+function Deck:browse()
+   return ipairs(self.cards)
+end
+
 -- PROPERTY MANAGEMENT
 
 -- DECK MANIPULATION
 
-function Deck:sort(property, descending)
+function Deck:sorted(property, descending)
    local comp
    if descending then
       function comp(a, b)
@@ -105,23 +113,27 @@ function Deck:sort(property, descending)
          return a.properties[property] < b.properties[property]
       end
    end
-   table.sort(self.cards, comp)
+   local newDeck = self:copy()
+   table.sort(newDeck.cards, comp)
+   return newDeck
 end
 
-function Deck:shuffle()
-   local cards = self.cards
+function Deck:shuffled()
+   local newDeck = self:copy()
+   local cards = newDeck.cards
    for i = #cards, 2, -1 do
       j = math.random(i)
       cards[i], cards[j] = cards[j], cards[i]
    end
+   return newDeck
 end
 
-function Deck:reverse()
-   local revCards = {}
-   for i = 1, #self.cards do
-      revCards[i] = table.remove(self.cards)
+function Deck:reversed()
+   local newDeck = newInstance(self)
+   for i = #self.cards, 1, -1 do
+      newDeck:addCard(self:seeCard(i))
    end
-   self.cards = revCards
+   return newDeck
 end
 
 function Deck:copy()
@@ -135,6 +147,7 @@ function Deck:merge(other, clear)
    if clear then
       other.cards = {}
    end
+   return self
 end
 
 function Deck:split(afterIndex)
