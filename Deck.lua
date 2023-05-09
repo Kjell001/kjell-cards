@@ -105,13 +105,9 @@ end
 function Deck:sorted(property, descending)
    local comp
    if descending then
-      function comp(a, b)
-         return b.properties[property] < a.properties[property]
-      end
+      function comp(a, b) return b << a | property end
    else
-      function comp(a, b)
-         return a.properties[property] < b.properties[property]
-      end
+      function comp(a, b) return a << b | property end
    end
    local newDeck = self:copy()
    table.sort(newDeck.cards, comp)
@@ -178,7 +174,7 @@ function Deck:first(condition)
 end
 
 function Deck:distinct()
-   local newDeck = Deck()
+   local newDeck = newInstance(self)
    local set = {}
    for index, card in ipairs(self.cards) do
       if not set[card] then
@@ -195,7 +191,7 @@ function Deck:byProperty(property)
    for index, card in ipairs(self.cards) do
       if card:hasProperty(property) then
          value = card:getPropertyValue(property)
-         decks[value] = decks[value] or Deck()
+         decks[value] = decks[value] or newInstance(self)
          decks[value]:addCard(card)
       end
    end

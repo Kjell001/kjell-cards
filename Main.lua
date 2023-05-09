@@ -12,7 +12,7 @@ function setup()
    
    print("Sort deck by rank")
    deck1:sortedByRank()
-   for index, card in deck1:sortedByRank():browse() do
+   for index, card in deck1:sortedByRank(true):browse() do
       print(index, card)
    end
    
@@ -33,4 +33,14 @@ function setup()
    for index, card in deck2:filteredSuitRank(nil, 1):browse() do
       print(index, card)
    end
+   
+   print("Poker hand in")
+   local deck3 = FrenchDeck():fill():shuffled():split(44)
+   local hand = ""
+   for index, card in deck3:browse() do
+      hand = hand .. tostring(card) .. " "
+   end
+   print(hand)
+   local pokerHand = deck3:pokerHand()
+   print(pokerHand, deck3.pokerHandNames[pokerHand])
 end

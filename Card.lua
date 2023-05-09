@@ -37,40 +37,54 @@ function Card:__tostring()
    return str
 end
 
+function Card:__add(other)
+   return CardOperation(self, other, OP_ADD)
+end
+
+function Card:__sub(other)
+   return CardOperation(self, other, OP_SUB)
+end
+
 function Card:__shl(other)
-   return CardComparison(self, other, OP_LT)
+   return CardOperation(self, other, OP_LT)
 end
 
 function Card:__shr(other)
-   return CardComparison(other, self, OP_LT)
+   return CardOperation(other, self, OP_LT)
 end
 
 function Card:__bxor(other)
-   return CardComparison(self, other, OP_EQ)
+   return CardOperation(self, other, OP_EQ)
 end
 
 
 ------------------------
--- CARD COMPARISON
+-- CARD OPERATORS
 ------------------------
 
-CardComparison = class()
+CardOperation = class()
 
-OP_EQ = 1
-OP_LT = 2
+OP_ADD = 1
+OP_SUB = 2
+OP_EQ = 3
+OP_LT = 4
 
-function CardComparison:init(card1, card2, operation)
+function CardOperation:init(card1, card2, operation)
    self.card1 = card1
    self.card2 = card2
    self.operation = operation
 end
 
-function CardComparison:__bor(property)
+function CardOperation:__bor(property)
    local value1 = self.card1:getPropertyValue(property)
    local value2 = self.card2:getPropertyValue(property)
-   if     self.operation == OP_LT then
+   if     self.operation == OP_ADD then
+      return value1 + value2
+   elseif self.operation == OP_SUB then
+      return value1 - value2
+   elseif self.operation == OP_LT  then
       return value1 < value2
-   elseif self.operation == OP_EQ then
+   elseif self.operation == OP_EQ  then
       return value1 == value2
    else
       error("Unknown CardComparison operator.")
